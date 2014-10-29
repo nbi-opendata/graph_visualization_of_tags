@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <script src="http://code.jquery.com/jquery-2.1.1.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <meta charset="UTF-8">
+    <title>MiniVisualization</title>
+
+    <script type="application/javascript">
+        var i = 0;
+        function onJsonLoaded(error, data)
+        {
+            self.data = data;
+            d3.select("#viz")
+                    .append("table")
+                    .style("border-collapse", "collapse")
+                    .style("border", "2px black solid")
+                    .data(data)
+                    .enter().append("tr")
+                    .filter(function(d){
+                        if($.inArray("BSR", d.tags) > -1)
+                        {
+                            i = i + 1;
+                        }
+                        return d.tags.indexOf('BSR') > -1;
+                    })
+                    .style("border", "1px black solid")
+                    .text(function(d){
+                        return d._title;})
+                    .style("font-size", "12px");
+        }
+
+        function button()
+        {
+            alert(i);
+        }
+
+        d3.json("daten-berlin_metadata.json", onJsonLoaded);
+    </script>
+
+
+</head>
+<body>
+
+    <div id="viz"></div>
+    <input type="button" onclick="button()" value="button"/>
+
+</body>
+</html>
