@@ -2,8 +2,10 @@
  * Created by Kadir on 31.10.2014.
  */
 
-var width = 960,
-    height = 500;
+var width = window.innerWidth,
+    height = window.innerHeight;
+
+var threshHold = 5;
 
 var color = d3.scale.category20();
 
@@ -36,7 +38,7 @@ function calculateEdges(nodes){
             self.tags[t].forEach(function(article){
                 var source = i;
                 var target = nodes.indexOf(article);
-                edgeMatrix[source][target] = 1;
+                edgeMatrix[source][target]++;
             });
 
         });
@@ -50,7 +52,7 @@ function calculateEdges(nodes){
             if(a == i)
                 continue;
 
-            if(edgeMatrix[i][a] == 0)
+            if(edgeMatrix[i][a] < threshHold)
                 continue;
 
             var edge =
