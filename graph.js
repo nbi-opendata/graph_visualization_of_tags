@@ -5,7 +5,8 @@
 var width = window.innerWidth,
     height = window.innerHeight;
 
-var threshHold = 5;
+var threshHold = 1;
+var limit = -1;
 
 var color = d3.scale.category20();
 
@@ -18,14 +19,14 @@ var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height);
 
-var tags = [];
+var groups = [];
 function calculateEdges(nodes){
 
     nodes.forEach(function(n){
-        n.tags.forEach(function(t){
-            if(self.tags[t] == undefined)
-                self.tags[t] = [];
-            self.tags[t].push(n);
+        n.groups.forEach(function(t){
+            if(self.groups[t] == undefined)
+                self.groups[t] = [];
+            self.groups[t].push(n);
         });
     });
 
@@ -34,8 +35,8 @@ function calculateEdges(nodes){
     //writing the matrix
     for(var i = 0; i < nodes.length; i++)
     {
-        nodes[i].tags.forEach(function(t){
-            self.tags[t].forEach(function(article){
+        nodes[i].groups.forEach(function(t){
+            self.groups[t].forEach(function(article){
                 var source = i;
                 var target = nodes.indexOf(article);
                 edgeMatrix[source][target]++;
@@ -85,7 +86,9 @@ function createMatrix(size, initialValue)
     return matrix;
 }
 
-d3.json("daten-berlin_metadata.json", function (error, graph) {
+d3.json("daten-berlin_metadata_2.json", function (error, graph) {
+    if(limit > 0)
+        graph = graph.slice(0,limit);
     var edges = calculateEdges(graph);
     force
         .nodes(graph)
@@ -112,7 +115,7 @@ d3.json("daten-berlin_metadata.json", function (error, graph) {
 
     node.append("title")
         .text(function (d) {
-            return d._title;
+            return d.name;
         });
 
     force.on("tick", function () {
